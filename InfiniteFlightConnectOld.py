@@ -27,7 +27,7 @@ def send_command(cmd, params, await_response=False):
     tcp.sendall(request)
     if await_response:
         print(f"{ADDR} [AWAITING RESPONSE from {IP} : {PORT}] Request has been sent to Infinite Flight")
-        response = tcp.recv(2048)[4:].decode("utf-8")
+        response = tcp.recv(16384)[4:].decode("utf-8")
         print(f'{ADDR} [RESPONSE RECIEVED from {IP} : {PORT}]')
         return response
     else:
