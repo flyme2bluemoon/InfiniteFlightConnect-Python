@@ -27,7 +27,10 @@ def send_command(cmd, params, await_response=False):
     tcp.sendall(request)
     if await_response:
         print(f"{ADDR} [AWAITING RESPONSE from {IP} : {PORT}] Request has been sent to Infinite Flight")
-        response = tcp.recv(16384)[4:].decode("utf-8")
+        response_length = tcp.recv(4).hex().strip("00")
+        response_length = "".join(reversed([response_length[i:i+2] for i in range(0, len(response_length), 2)]))
+        response_length = int(response_length, 16)
+        response = tcp.recv(response_length).decode("utf-8")
         print(f'{ADDR} [RESPONSE RECIEVED from {IP} : {PORT}]')
         return response
     else:
