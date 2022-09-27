@@ -30,7 +30,15 @@ def send_command(cmd, params, await_response=False):
         print(f"{ADDR} [AWAITING RESPONSE from {IP} : {PORT}] Request has been sent to Infinite Flight")
         response_length = tcp.recv(4)[:2]
         response_length = struct.unpack('<H', response_length)[0]
-        response = tcp.recv(response_length).decode("utf-8")
+        
+        # keep recv till reach the response_length
+        recved = 0
+        response = bytes()
+        while recved < response_length:
+            response += tcp.recv(response_length - recved)
+            recved = len(response)
+        response = response.decode("utf-8")
+
         print(f'{ADDR} [RESPONSE RECIEVED from {IP} : {PORT}]')
         return response
     else:
